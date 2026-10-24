@@ -146,6 +146,14 @@ def etiqueta(d):
     return f"{MESES[d.month - 1]} {d.year}"
 
 
+def eje_fechas(ax, fechas, cada=3, rot=45):
+    """Eje X con etiquetas como 'Oct 2026'. cada = separación en meses entre etiquetas."""
+    fechas = pd.DatetimeIndex(fechas)
+    marcas = fechas[(fechas.month - 1) % cada == 0]
+    ax.set_xticks(marcas)
+    ax.set_xticklabels([etiqueta(d) for d in marcas], rotation=rot, ha="right")
+
+
 # ----------------------------------------------------------------------------- datos y modelo
 serie = leer_serie()
 firma = os.path.getmtime(F_SERIE)
@@ -218,6 +226,7 @@ with t_pron:
     ax.grid(alpha=0.3)
     ax.legend(loc="upper left", ncol=4)
     ax.set_title("Últimos 36 meses reales y pronóstico")
+    eje_fechas(ax, hist.index.append(idx), cada=3)
     mostrar(fig)
 
     col_a, col_b = st.columns([3, 2])
@@ -385,6 +394,7 @@ with t_des:
     ax.grid(alpha=0.3)
     ax.legend(ncol=4)
     ax.set_title("Pronóstico vs. real en los meses de prueba")
+    eje_fechas(ax, te.index, cada=1 if len(te) <= 12 else 2)
     mostrar(fig)
 
     det = pd.DataFrame({"Real": u(te.values), "Pronóstico": u(ev["SARIMA"])}, index=te.index)
@@ -409,6 +419,7 @@ with t_des:
                 ax.plot(pv.index, pv[c], marker="o", label=c)
             ax.set_ylabel("MAE (t)")
             ax.set_title("Error por fecha de corte")
+            eje_fechas(ax, pv.index, cada=1)
             ax.grid(alpha=0.3)
             ax.legend()
             mostrar(fig)
