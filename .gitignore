@@ -1,0 +1,15 @@
+# Entornos virtuales (el de ambas computadoras)
+venv_pronostico/
+venv/
+.venv/
+env/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos ocultos del sistema
+.DS_Store
+Thumbs.db
